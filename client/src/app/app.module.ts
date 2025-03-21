@@ -16,6 +16,7 @@ import { RestaurantStore } from './restaurant.store';
 const appRoutes: Routes = [
   {path: '', component:MenuComponent},
   {path: 'placeOrder', component: PlaceOrderComponent},
+  {path: 'confirmation', component: ConfirmationComponent},
   {path: '**', redirectTo: '/', pathMatch: 'full'}
 ]
 

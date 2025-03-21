@@ -1,8 +1,12 @@
 package vttp.batch5.csf.assessment.server.repositories;
 
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -18,6 +22,9 @@ import org.springframework.web.client.RestTemplate;
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+
+import static vttp.batch5.csf.assessment.server.Utils.*;
 
 @Repository
 // Use the following class for MySQL database
@@ -32,6 +39,11 @@ public class RestaurantRepository {
 
     private static final String CHECK_USERNAME = """
             select * from customers where username = ?
+            """;
+
+    private static final String INSERT_ORDER = """
+            insert into place_orders (order_id, payment_id, order_date, total, username) 
+            values (?, ?, ?, ?, ?);
             """;
 
     // validate username and password
@@ -56,12 +68,12 @@ public class RestaurantRepository {
 
         // calculate the total amount
         JsonArray arr = j.getJsonArray("items");
-        int payment = 0;
+        float payment = 0;
         for (int i = 0; i < arr.size(); i ++){
             JsonObject item = arr.getJsonObject(i);
             int quantity = item.getInt("quantity");
-            double price = item.getJsonNumber("price").doubleValue();
-            payment += (double) (quantity * price);
+            float price = (float) item.getJsonNumber("price").doubleValue();
+            payment += (float) (quantity * price);
         }
 
         JsonObject obj = Json.createObjectBuilder()
@@ -91,6 +103,20 @@ public class RestaurantRepository {
         System.out.printf(">>> %s\n", payload);
         return body;
 
+    }
+
+    public void insertOrderSQL(String paymentResponse, JsonObject confirmation) throws ParseException{
+        
+        // toJson
+        JsonReader reader = Json.createReader(new StringReader(paymentResponse));
+        JsonObject j = reader.readObject();
+
+        // process timestamp
+        Date orderDate = convertTimestamp(j.getJsonNumber("timestamp").longValue());
+
+        template.update(INSERT_ORDER, j.getString("order_id"), 
+            j.getString("payment_id"), orderDate, 
+            j.getJsonNumber("total").doubleValue(), confirmation.getString("username"));
     }
 
     public String encryptPassword(String input) throws NoSuchAlgorithmException{

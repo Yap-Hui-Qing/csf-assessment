@@ -25,3 +25,10 @@ export interface Order {
     password: string,
     items: Item[]
 }
+
+export interface Receipt {
+    timestamp: number
+    orderId: string,
+    paymentId: string,
+    total: number
+}
