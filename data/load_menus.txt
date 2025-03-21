@@ -1,0 +1,4 @@
+# TODO: Task 1.1
+
+# local
+mongoimport -d restaurant -c menu --type=json --jsonArray --file=menus.json

@@ -1,0 +1,72 @@
+<div class="row mt-3">
+  <div class="col d-flex justify-content-between align-items-center">
+    <div class="fs-1 fw-bold text-primary">Menu ({{totalAmount | currency }}) </div>
+    <div>
+      <button type="button" class="btn btn-primary" (click)="process()">
+        Place Order ({{totalQuantity}})
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- each row display a single mene item -->
+@for (m of menu; track m.id){
+<div class="row mb-2">
+  <div class="col">
+    <div class="menu-item">
+      <div>
+        <button type="button" class="btn btn-warning" [disabled]="disableDelete(m)" (click)="deleteItem(m)">
+          <i class="bi bi-x-square"></i>
+        </button>
+      </div>
+      <div class="menu-details">
+        <div>Name: <span class="fw-bold"> {{m.name}} </span> </div>
+        <div>Description:
+          <span class="fst-italic">
+            {{m.description}}
+          </span>
+        </div>
+        <div></div>
+        <div>Price: <span class="fw-bold"> {{m.price | currency }} </span> </div>
+        <div></div>
+        @if (m.quantity != 0){
+          <div class="text-danger fw-bold">Quantity: {{m.quantity}}</div>
+        }
+      </div>
+      <div class="menu-button-end">
+        <button type="button" class="btn btn-success" (click)="addItem(m)">
+          <i class="bi bi-plus-circle"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+
+<!-- <div class="row mb-2">
+  <div class="col">
+    <div class="menu-item">
+      <div>
+        <button type="button" class="btn btn-warning">
+          <i class="bi bi-x-square"></i>
+        </button>
+      </div>
+      <div class="menu-details">
+        <div>Name: <span class="fw-bold"> XXX </span> </div>
+        <div>Description:
+          <span class="fst-italic">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+          </span>
+        </div>
+        <div></div>
+        <div class="text-danger fw-bold">Quantity: XXX</div>
+      </div>
+      <div class="menu-button-end">
+        <button type="button" class="btn btn-success">
+          <i class="bi bi-plus-circle"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div> -->
